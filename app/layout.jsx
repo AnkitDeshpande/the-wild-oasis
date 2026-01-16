@@ -1,4 +1,4 @@
-import "../app/_styles/globals.css";
+import "../globals.css";
 import Logo from "./_components/Logo";
 import Navigation from "./_components/Navigation";
 
