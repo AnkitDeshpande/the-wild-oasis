@@ -1,6 +1,19 @@
-import { getCabin } from "@/app/_lib/data-service";
+import { getCabin, getCabins } from "@/app/_lib/data-service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+
+//generating metadata for cabinCard page : provided by next js convention
+export async function generateMetadata({ params }) {
+  const { cabinId } = await params;
+  const { name } = await getCabin(cabinId);
+  return { title: `Cabin ${name}` };
+}
+
+//generating static params for prerendering the cabinCard page : provided by next js convention
+export async function generateStaticParams() {
+  const cabins = await getCabins();
+  return cabins.map((cabin) => ({ cabinId: String(cabin.id) }));
+}
 
 export default async function Page({ params }) {
   const { cabinId } = await params;
@@ -21,6 +34,7 @@ export default async function Page({ params }) {
               className="object-cover"
               src={image}
               alt={`Cabin ${name}`}
+              loading="eager"
             />
           </div>
         </div>
@@ -48,7 +62,7 @@ export default async function Page({ params }) {
               <MapPinIcon className="h-5 w-5 text-primary-600" />
               <span className="text-lg">
                 Located in the heart of the{" "}
-                <span className="font-bold">Dolomites</span> (Italy)
+                <span className="font-bold">Himalayas</span> (India)
               </span>
             </li>
 

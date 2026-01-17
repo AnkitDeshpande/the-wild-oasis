@@ -2,6 +2,15 @@ import { Suspense } from "react";
 import CabinList from "../_components/CabinList";
 import CabinListSkeleton from "../_components/CabinListSkeleton";
 
+// Disabling and enabling cacheing in prod servers.
+// This value will be number of seconds for refetch the cached data
+// 0 means fresh data
+/* export const revalidate = 0;*/
+
+export const metadata = {
+  title: "Cabins",
+};
+
 export default async function Page() {
   // CHANGE
 

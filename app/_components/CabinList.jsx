@@ -16,4 +16,3 @@ const CabinList = async () => {
 };
 
 export default CabinList;
-
