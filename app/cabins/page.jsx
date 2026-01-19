@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import CabinList from "../_components/CabinList";
 import CabinListSkeleton from "../_components/CabinListSkeleton";
+import Filter from "../_components/Filter";
 
 // Disabling and enabling cacheing in prod servers.
 // This value will be number of seconds for refetch the cached data
@@ -11,9 +12,12 @@ export const metadata = {
   title: "Cabins",
 };
 
-export default async function Page() {
-  // CHANGE
+export default async function Page({ searchParams }) {
+  const { capacity } = await searchParams;
 
+  const filter = capacity ?? "all";
+
+  // CHANGE
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -28,8 +32,12 @@ export default async function Page() {
         Welcome to paradise.
       </p>
 
-      <Suspense fallback={<CabinListSkeleton />}>
-        <CabinList />
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+
+      <Suspense fallback={<CabinListSkeleton />} key={filter}>
+        <CabinList filter={filter} />
       </Suspense>
     </div>
   );
