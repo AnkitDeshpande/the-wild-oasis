@@ -1,5 +1,6 @@
 import { Poppins } from "next/font/google";
 import Header from "./_components/Header";
+import { ReservationProvider } from "./_components/ReservationContext";
 import "./_styles/globalcss.css";
 
 const poppins = Poppins({
@@ -26,7 +27,9 @@ export default function RootLayout({ children }) {
       >
         <Header />
         <div className="flex-1 px-8 grid">
-          <main className="max-w-7xl mx-auto w-full">{children}</main>
+          <main className="max-w-7xl mx-auto w-full">
+            <ReservationProvider>{children}</ReservationProvider>
+          </main>
         </div>
       </body>
     </html>

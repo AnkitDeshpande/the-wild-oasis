@@ -3,6 +3,7 @@
 import { isWithinInterval } from "date-fns";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+import { useReservation } from "./ReservationContext";
 
 const defaultClassNames = getDefaultClassNames();
 
@@ -16,18 +17,14 @@ function isAlreadyBooked(range, datesArr) {
   );
 }
 
-function DateSelector() {
+function DateSelector({ settings, bookedDates, cabin }) {
+  const { range, setRange, resetRange } = useReservation();
   // CHANGE
   const regularPrice = 23;
   const discount = 23;
   const numNights = 23;
   const cabinPrice = 23;
-  const range = { from: null, to: null };
-
-  // SETTINGS
-  const minBookingLength = 1;
-  const maxBookingLength = 23;
-  console.log(defaultClassNames);
+  const { minBookingLength, maxBookingLength } = settings;
   return (
     <div className="flex flex-col justify-between">
       <DayPicker
@@ -38,6 +35,8 @@ function DateSelector() {
         startMonth={new Date()}
         min={minBookingLength + 1}
         max={maxBookingLength}
+        onSelect={setRange}
+        selected={range}
         classNames={{
           /* ROOT & FIXED SIZE */
           root: "rdp-root bg-primary-950 shadow-lg p-5 rounded-lg w-full relative",
@@ -121,7 +120,7 @@ function DateSelector() {
         {range.from || range.to ? (
           <button
             className="border border-primary-800 py-2 px-4 text-sm font-semibold"
-            onClick={() => resetRange()}
+            onClick={resetRange}
           >
             Clear
           </button>

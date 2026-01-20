@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import CabinList from "../_components/CabinList";
 import CabinListSkeleton from "../_components/CabinListSkeleton";
 import Filter from "../_components/Filter";
+import ReservationReminder from "../_components/ReservationReminder";
 
 // Disabling and enabling cacheing in prod servers.
 // This value will be number of seconds for refetch the cached data
@@ -38,6 +39,7 @@ export default async function Page({ searchParams }) {
 
       <Suspense fallback={<CabinListSkeleton />} key={filter}>
         <CabinList filter={filter} />
+        <ReservationReminder />
       </Suspense>
     </div>
   );
