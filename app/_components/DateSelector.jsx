@@ -1,6 +1,6 @@
 "use client";
 
-import { isWithinInterval } from "date-fns";
+import { differenceInDays, isWithinInterval } from "date-fns";
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { useReservation } from "./ReservationContext";
@@ -19,24 +19,27 @@ function isAlreadyBooked(range, datesArr) {
 
 function DateSelector({ settings, bookedDates, cabin }) {
   const { range, setRange, resetRange } = useReservation();
-  // CHANGE
-  const regularPrice = 23;
-  const discount = 23;
-  const numNights = 23;
-  const cabinPrice = 23;
+  const displayRange = isAlreadyBooked(range, bookedDates) ? {} : range;
   const { minBookingLength, maxBookingLength } = settings;
+  const { regularPrice, discount } = cabin;
+  const numNights = differenceInDays(displayRange.to, displayRange.from);
+  const cabinPrice = numNights * (regularPrice - discount);
+
   return (
     <div className="flex flex-col justify-between">
       <DayPicker
         mode="range"
         numberOfMonths={2}
         captionLayout="dropdown"
-        disabled={{ before: new Date() }}
+        disabled={[{ before: new Date() }, ...bookedDates]}
+        modifiers={{
+          booked: bookedDates,
+        }}
         startMonth={new Date()}
         min={minBookingLength + 1}
         max={maxBookingLength}
         onSelect={setRange}
-        selected={range}
+        selected={displayRange}
         classNames={{
           /* ROOT & FIXED SIZE */
           root: "rdp-root bg-primary-950 shadow-lg p-5 rounded-lg w-full relative",
@@ -84,8 +87,9 @@ function DateSelector({ settings, bookedDates, cabin }) {
           range_start: "bg-amber-500 text-white rounded-l-md",
           range_middle: "bg-amber-500/30 text-white",
           range_end: "bg-amber-500 text-white rounded-r-md",
+          booked: "bg-red-500/30 text-red-400 line-through",
           disabled:
-            "text-gray-600 opacity-20 cursor-not-allowed pointer-events-none",
+            "text-gray-600 opacity-50 cursor-not-allowed pointer-events-none",
         }}
       />
 

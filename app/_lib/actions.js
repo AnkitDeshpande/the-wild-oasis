@@ -39,7 +39,7 @@ export const deleteReservation = async (bookingId) => {
 
   if (!bookingId) throw new Error("No booking ID provided");
 
-  const guestBookings = await getBookings();
+  const guestBookings = await getBookings(session.user.guestId);
   const ids = guestBookings.map((booking) => booking.id);
 
   if (!ids.includes(bookingId))
