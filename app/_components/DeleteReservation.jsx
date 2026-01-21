@@ -1,8 +1,8 @@
 "use client";
 
-import SpinnerMini from "@/_starter/components/SpinnerMini";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useState, useTransition } from "react";
+import SpinnerMini from "./SpinnerMini";
 
 // ... existing imports
 
