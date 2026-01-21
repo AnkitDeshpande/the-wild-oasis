@@ -1,12 +1,31 @@
 "use client";
 
+import { differenceInDays } from "date-fns";
 import Image from "next/image";
+import { createBooking } from "../_lib/actions";
 import { useReservation } from "./ReservationContext";
+import SubmitButton from "./SubmitButton";
 
 function ReservationForm({ cabin, user }) {
   // Added user prop
-  const { range } = useReservation();
-  const { maxCapacity } = cabin;
+  const { range, resetRange } = useReservation();
+  const { id, maxCapacity, regularPrice, discount } = cabin;
+  const startDate = range.from;
+  const endDate = range.to;
+  const numNights = differenceInDays(endDate, startDate) + 1;
+  const cabinPrice = numNights * (regularPrice - discount);
+
+  const bookingData = {
+    startDate,
+    endDate,
+    numNights,
+    cabinPrice,
+    cabinId: id,
+  };
+
+  // Bind the data to the action
+  // The first argument is 'this' (null), the second is our data object
+  const createBookingWithData = createBooking.bind(null, bookingData);
 
   return (
     <div className="scale-[1.01]">
@@ -30,7 +49,13 @@ function ReservationForm({ cabin, user }) {
       </div>
 
       {/* Reduced horizontal padding (px-8) and text size (text-base) */}
-      <form className="bg-primary-900 py-8 px-8 text-base flex gap-4 flex-col">
+      <form
+        action={async (formData) => {
+          await createBookingWithData(formData); // Wait for the server to finish
+          resetRange(); // Then clear the calendar
+        }}
+        className="bg-primary-900 py-8 px-8 text-base flex gap-4 flex-col"
+      >
         <div className="space-y-1">
           <label htmlFor="numGuests" className="text-sm font-medium">
             How many guests?
@@ -65,21 +90,18 @@ function ReservationForm({ cabin, user }) {
           />
         </div>
 
-        <div className="flex justify-between items-center gap-4 pt-2">
+        <div className="flex justify-end items-center gap-4 pt-2">
           {!range?.from || !range?.to ? (
             <p className="text-primary-300 text-xs italic">
               Start by selecting dates
             </p>
           ) : (
-            <div></div> // Placeholder to keep button on right
+            <div>
+              <SubmitButton pendingLabel="Reserving....">
+                Reserve Now.
+              </SubmitButton>
+            </div> // Placeholder to keep button on right
           )}
-
-          <button
-            className="bg-accent-500 px-6 py-3 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300 text-sm"
-            disabled={!range?.from || !range?.to}
-          >
-            Reserve now
-          </button>
         </div>
       </form>
     </div>

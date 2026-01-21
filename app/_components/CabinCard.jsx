@@ -5,9 +5,6 @@ import Link from "next/link";
 function CabinCard({ cabin, index }) {
   const { id, name, maxCapacity, regularPrice, discount, image } = cabin;
 
-  const isLCP = index === 0;
-  const isAboveFold = index < 4;
-
   return (
     <div className="flex border border-primary-800">
       {/* IMAGE */}
@@ -16,11 +13,9 @@ function CabinCard({ cabin, index }) {
           src={image}
           alt={`Cabin ${name}`}
           fill
+          priority={index < 2}
           className="object-cover border-r border-primary-800"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority={isLCP}
-          loading={isLCP ? "eager" : isAboveFold ? "eager" : "lazy"}
-          fetchPriority={isLCP ? "high" : isAboveFold ? "high" : "auto"}
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
       </div>
 

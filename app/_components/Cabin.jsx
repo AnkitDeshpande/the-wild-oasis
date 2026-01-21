@@ -11,11 +11,11 @@ const Cabin = ({ cabin }) => {
         <div className="relative h-full md:scale-[1.15] md:-translate-x-3">
           <Image
             fill
+            priority
             sizes="(max-width: 768px) 100vw, 45vw"
             className="object-cover"
             src={image}
             alt={`Cabin ${name}`}
-            loading="eager"
           />
         </div>
       </div>

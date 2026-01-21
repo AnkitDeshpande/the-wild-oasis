@@ -84,6 +84,40 @@ export const updateBooking = async (formData) => {
   redirect("/account/reservations");
 };
 
+// 1. bookingData comes from .bind()
+// 2. formData comes from the <form> inputs
+export const createBooking = async (bookingData, formData) => {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in.");
+
+  const newBooking = {
+    // These come from the bound object (bookingData)
+    startDate: bookingData.startDate,
+    endDate: bookingData.endDate,
+    numNights: bookingData.numNights,
+    cabinPrice: bookingData.cabinPrice,
+    cabinId: bookingData.cabinId,
+    totalPrice: bookingData.cabinPrice,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations")?.slice(0, 1000) || "",
+    extrasPrice: 0,
+    status: "unconfirmed",
+    hasBreakfast: false,
+    isPaid: false,
+  };
+
+  const { error } = await supabase.from("bookings").insert([newBooking]);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be created");
+  }
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+  redirect("/cabins/thankyou");
+};
+
 export const signInAction = async () => {
   await signIn("google", { redirectTo: "/account" });
 };
